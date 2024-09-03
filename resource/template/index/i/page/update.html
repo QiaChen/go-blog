@@ -1,0 +1,173 @@
+<link rel="stylesheet" href="/plugin/editormd/css/editormd.min.css"/>
+<script src="/plugin/editormd/editormd.min.js"></script>
+
+<link rel="stylesheet" href="/plugin/dropzone/dropzone.css"/>
+<script src="/plugin/dropzone/dropzone-min.js"></script>
+
+<div class="container">
+
+    <div class="d-flex justify-content-between mt-5 mb-5">
+        <div class="user_header">
+            <p class="h2"><a class="h2 " href="/page"><i class="bi bi-arrow-left-short"></i> 返回</a></p>
+        </div>
+
+        <div>
+        </div>
+    </div>
+
+
+    <div class="bg-white rounded overflow-hidden mb-4 shadow-sm p-4">
+        <h5 class="user_main_h5">编辑页面</h5>
+        <form id="contentForm" action="/page/update" method="post">
+            <input type="hidden" value="{{.Data.Id}}" name="id">
+            <div class="form-group mb-3">
+                <label class="col-form-label">标题</label>
+                <div class="">
+                    <input type="text" class="form-control" value="{{.Data.Title}}" name="title" placeholder="请输入标题">
+                </div>
+            </div>
+
+            <div class="form-group mb-3">
+                <label class="col-form-label">url路径</label>
+                <div class="">
+                    <input type="text" class="form-control" value="{{.Data.UrlPath}}" name="url_path" placeholder="请输入url路径">
+                </div>
+            </div>
+
+            <div class="form-group mb-3">
+                <label class=" col-form-label ">描述</label>
+                <div class="">
+                    <input type="text" class="form-control" value="{{.Data.Description}}" name="description" placeholder="请输入描述">
+                </div>
+            </div>
+
+            <div class="form-group mb-3">
+                <label class=" col-form-label ">模版</label>
+                <div class="">
+                    <input type="text" class="form-control" value="{{.Data.Template}}" name="template" placeholder="模版">
+                </div>
+            </div>
+
+            <div class="form-group mb-3">
+                <label class=" col-form-label ">是否开启评论</label>
+                <div class="">
+                    <input type="radio" class="btn-check" name="reply" value="1" id="option1"  {{if eq .Data.Reply 1}} checked {{end}}>
+                    <label class="btn" for="option1">开启</label>
+
+                    <input type="radio" class="btn-check" name="reply"  value="0" id="option2" {{if eq .Data.Reply 0}} checked {{end}} >
+                    <label class="btn" for="option2">关闭</label>
+
+                </div>
+            </div>
+
+
+
+
+
+            <div class="form-group mb-3">
+                <label class=" col-form-label">内容</label>
+                <div class="" id="editormd">
+                    <textarea name="content" style="display: none">{{.Data.Content}}</textarea>
+                    <div id="vditor"></div>
+                </div>
+            </div>
+
+            <div class="form-group mb-3">
+                <div class=" ">
+                    <button type="submit" class="btn btn-primary btn-block">更新</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    jQuery(function($) {
+        $("#user-page").addClass("active")
+
+        // 编辑器初始化
+        testEditor = editormd("editormd", {
+            width   : "100%",
+            height  : 640,
+            syncScrolling : "single",
+            imageUpload    : true,
+            imageFormats   : ["jpg", "jpeg", "gif", "png", "bmp", "webp"],
+            imageUploadURL : "/file",
+            path    : "/plugin/editormd/lib/"
+        });
+
+        // 表单校验
+        $('#contentForm').validate({
+            errorElement: 'div',
+            errorClass: 'validation-error-block',
+            focusInvalid: true,
+            rules: {
+                title: {
+                    required: true
+                },
+                url_path: {
+                    required: true
+                },
+                template: {
+                    required: true
+                }
+            },
+            messages: {
+                title: {
+                    required: "请输入标题"
+                },
+                url_path: {
+                    required: "请输入url_path"
+                },
+                template: {
+                    required: "请输入模版"
+                }
+            },
+            submitHandler: function(form) {
+                let submit = $('button[type=submit]')
+                if (submit.attr('disabled') == 'true') {
+                    swal({
+                        text:   "请勿重复提交",
+                        icon:   "warning",
+                        button: "确定",
+                    });
+                    return
+                }
+
+
+                submit.attr('disabled', 'true');
+                $(form).ajaxSubmit({
+                    dataType: 'json',
+                    success:  function (r, textStatus) {
+                        if (r.code <= 0) {
+                            swal({
+                                title:   "发布成功",
+                                text:    "内容发布成功",
+                                icon:    "success",
+                                buttons: ["继续撰写", "返回列表"]
+                            }).then((value) => {
+                                if (value) {
+                                    window.location.href = "/page"
+                                } else {
+                                    window.location.reload()
+                                }
+                            });
+                        } else {
+                            swal({
+                                text:   r.message,
+                                icon:   "warning",
+                                button: "确定",
+                            });
+                        }
+                    }
+                });
+                submit.removeAttr('disabled');
+            },
+            errorPlacement: function (error, element) {
+                element.addClass("is-invalid")
+                error.appendTo(element.parent());
+            }
+        });
+    });
+</script>

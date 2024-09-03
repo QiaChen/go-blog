@@ -1,0 +1,51 @@
+<div class="container">
+<!--- main --->
+<div class="row">
+
+    <div class="col-md-2">
+
+        <ul class="blog_nav list-unstyled">
+            <li><a class="blog_nav_link px-3 {{if not $.Query.cate}} active {{else}}text-secondary{{end}}" href="/?sort={{.Query.sort}}">全部</a></li>
+            {{range $index, $item := .BuildIn.CategoryTree .ContentType}}
+            <li><a class="blog_nav_link px-3 {{if eq $.Query.cate $item.Id}} active {{else}}text-secondary{{end}} " href="/?cate={{$item.Id}}&sort={{$.Query.sort}}">{{$item.Name}}</a></li>
+            {{end}}
+        </ul>
+    </div>
+
+
+    <div class="col-md-10">
+        {{range $index, $item := .Data.List}}
+        <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative bg-white">
+            {{if $item.Content.Thumb}}
+            <div class="col-auto d-none d-lg-block">
+                <img class="bd-placeholder-img" src="{{$item.Content.Thumb}}" width="200" height="250"></img>
+            </div>
+            {{end}}
+            <div class="col p-4 d-flex flex-column ">
+                <div class="mb-2 fs-6"><span class="badge text-bg-secondary">{{$item.Category.Name}}</span></div>
+                <div class="mb-2"><a href="/{{$item.Content.Id}}" class="mb-0 h3">{{$item.Content.Title}}</a></div>
+                <p class="card-text mb-auto mb-2 fs-6 text-secondary">{{$.BuildIn.Substr $item.Content.Content 240 }} </p>
+                <div class="d-flex justify-content-between align-items-center">
+                    <small class="text-body-secondary">{{$item.Content.CreatedAt | $.BuildIn.FormatTime}}</small>
+                    <div class="text-body-secondary">
+                        <span>阅读 {{$item.Content.ViewCount}}</span>
+                        <span class="ms-2">回复 {{$item.Content.ReplyCount}}</span>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+        {{end}}
+
+        {{if gt .Data.Total .Data.Size}}
+        <li class="list-group-item gf-list-item">
+            <ul class="pagination">
+                {{.BuildIn.Page .Data.Total .Data.Size }}
+            </ul>
+        </li>
+        {{end}}
+    </div>
+
+</div>
+</div>

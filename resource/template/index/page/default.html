@@ -1,0 +1,28 @@
+<link rel="stylesheet" href="/plugin/editormd/css/editormd.preview.css"/>
+<script src="/plugin/editormd//lib/marked.min.js"></script>
+<script src="/plugin/editormd//lib/prettify.min.js"></script>
+<script src="/plugin/editormd/editormd.min.js"></script>
+<div class="container">
+    <div class="row">
+
+        <div class="col-md-2 d-none d-md-inline-block" style="overflow: hidden">
+            <h6>目录</h6>
+            <div class="custom-toc-container" ></div>
+        </div>
+        <div class="col-md-10">
+            <div id="page_main"><textarea style="display:none;" name="editormd-markdown-doc">{{.Data.Content}}</textarea></div>
+        </div>
+    </div>
+</div>
+<script type="application/javascript">
+    $(function () {
+        testEditormdView2 = editormd.markdownToHTML("page_main", {
+            tocContainer    : ".custom-toc-container",
+            tocm                 : true,
+            tocDropdown          : true,
+            tocTitle:"目录",
+            htmlDecode      : "style,script,iframe",  // you can filter tags decode
+            emoji           : true,
+        });
+    })
+</script>

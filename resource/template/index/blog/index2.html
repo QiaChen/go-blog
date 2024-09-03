@@ -1,0 +1,35 @@
+<div class="container">
+<!--- main --->
+<div class="row">
+
+    <div class="col-md-2">
+
+        <ul class="blog_nav list-unstyled">
+            <li><a class="blog_nav_link px-3 {{if not $.Query.cate}} active {{else}}text-secondary{{end}}" href="/?sort={{.Query.sort}}">全部</a></li>
+            {{range $index, $item := .BuildIn.CategoryTree .ContentType}}
+            <li><a class="blog_nav_link px-3 {{if eq $.Query.cate $item.Id}} active {{else}}text-secondary{{end}} " href="/?cate={{$item.Id}}&sort={{$.Query.sort}}">{{$item.Name}}</a></li>
+            {{end}}
+        </ul>
+    </div>
+
+
+    <div class="col-md-10">
+        <ul class="list-unstyled p-2">
+        {{range $index, $item := .Data.List}}
+            <li class="blog2_list_li d-flex justify-content-between">
+                <a class="text-dark fs-6" href="/{{$item.Content.Id}}" ><span class="pe-4">[{{$item.Category.Name}}]</span>  {{$item.Content.Title}}</a>
+                <div class="text-body-tertiary">{{$item.Content.CreatedAt | $.BuildIn.FormatTime}}</div>
+            </li>
+        {{end}}
+        </ul>
+        {{if gt .Data.Total .Data.Size}}
+        <li class="list-group-item gf-list-item">
+            <ul class="pagination">
+                {{.BuildIn.Page .Data.Total .Data.Size }}
+            </ul>
+        </li>
+        {{end}}
+    </div>
+
+</div>
+</div>

@@ -1,0 +1,8 @@
+{{if .Notice}}
+<div class="col-md-6 offset-md-3">
+    <div class="alert alert-{{.Notice.Type}} alert-dismissible fade show top-message" >
+        {{.Notice.Content}}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+</div>
+{{end}}

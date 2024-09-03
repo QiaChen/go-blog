@@ -1,0 +1,64 @@
+<link rel="stylesheet" href="/plugin/editormd/css/editormd.preview.css"/>
+<script src="/plugin/editormd//lib/marked.min.js"></script>
+<script src="/plugin/editormd//lib/prettify.min.js"></script>
+<script src="/plugin/editormd/editormd.min.js"></script>
+
+
+<div class="container">
+    <!--- main --->
+    <div class="row">
+
+        <div class="col-md-2 d-none d-md-inline-block" style="overflow: hidden">
+            <h6>目录</h6>
+            <div class="custom-toc-container" ></div>
+        </div>
+        <div class="col-md-10">
+
+            {{if .BreadCrumb}}
+            <nav aria-label="breadcrumb" class="gf-content-breadcrumb ">
+                <ol class="breadcrumb">
+                    {{range $index, $item := .BreadCrumb}}
+                    <li class="breadcrumb-item {{if not $item.Url}}active{{end}}">
+                        {{if $item.Url}}
+                        <a class="text-dark" href="{{$item.Url}}">{{$item.Name}}</a>
+                        {{else}}
+                        {{$item.Name}}
+                        {{end}}
+                    </li>
+                    {{end}}
+                </ol>
+            </nav>
+            {{end}}
+
+
+            <div class="overflow-hidden mb-4">
+                <p class="h2 pb-2">{{.Data.Content.Title}}</p>
+                <p class="d-flex justify-content-between">
+                    <span class="text-secondary">阅读{{.Data.Content.ViewCount}}  评论{{.Data.Content.ReplyCount}}</span>
+                    <span class="text-secondary">发布于 {{.Data.Content.CreatedAt | .BuildIn.FormatTime}}</span>
+                </p>
+
+                <div class="blog_detail_main" id="blog_detail_main">
+
+                    <textarea style="display:none;" name="editormd-markdown-doc">{{.Data.Content.Content}}</textarea>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+</div>
+
+
+<script type="application/javascript">
+    $(function () {
+        testEditormdView2 = editormd.markdownToHTML("blog_detail_main", {
+            tocContainer    : ".custom-toc-container",
+            tocm                 : true,
+            tocDropdown          : true,
+            tocTitle:"目录",
+            htmlDecode      : "style,script,iframe",  // you can filter tags decode
+            emoji           : true,
+        });
+    })
+</script>

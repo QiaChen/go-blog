@@ -1,0 +1,41 @@
+<div class="container">
+
+    <div class="h-100 p-5 text-bg-secondary rounded-3 my-5">
+        <h2>欢迎使用CQQ博客系统</h2>
+        <p>使用goang + GoFrame框架，搭建的高效且美观的博客系统</p>
+        <a href="https://github.com/QiaChen/go-blog" target="_blank" class="btn btn-outline-light"><i class="bi bi-github"></i> 查看详情</a>
+    </div>
+
+
+    <div class="bg-white rounded overflow-hidden mb-4 shadow-sm p-4">
+        <h5 class="user_main_h5">系统信息</h5>
+        <table class="table">
+            <tr>
+                <td width="100">GO版本</td>
+                <td>{{.Data.Version}}</td>
+            </tr>
+            <tr>
+                <td>CPU</td>
+                <td>{{.Data.NumCPU}}</td>
+            </tr>
+            <tr>
+                <td>GOMAXPROCS</td>
+                <td>{{.Data.GOMAXPROCS}}</td>
+            </tr>
+            <tr>
+                <td>内存</td>
+                <td>{{.Data.Mem}}</td>
+            </tr>
+            <tr>
+                <td>协程数量</td>
+                <td>{{.Data.NumGoroutine}}</td>
+            </tr>
+        </table>
+    </div>
+
+</div>
+<script>
+    jQuery(function ($) {
+        $("#user-index").addClass("active")
+    });
+</script>

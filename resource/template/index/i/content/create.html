@@ -1,0 +1,187 @@
+<link rel="stylesheet" href="/plugin/editormd/css/editormd.min.css"/>
+<script src="/plugin/editormd/editormd.min.js"></script>
+
+<link rel="stylesheet" href="/plugin/dropzone/dropzone.css"/>
+<script src="/plugin/dropzone/dropzone-min.js"></script>
+
+<div class="container">
+
+    <div class="d-flex justify-content-between mt-5 mb-5">
+        <div class="user_header">
+            <p class="h2"><a class="h2 " href="/content"><i class="bi bi-arrow-left-short"></i> 返回</a></p>
+        </div>
+
+        <div>
+        </div>
+    </div>
+
+
+    <div class="bg-white rounded overflow-hidden mb-4 shadow-sm p-4">
+        <h5 class="user_main_h5">写博客</h5>
+            <form id="contentForm" action="/content/create" method="post">
+                <input type="hidden" value="{{.ContentType}}" name="type">
+                <div class="form-group mb-3">
+                    <label class=" col-form-label ">标题</label>
+                    <div class="">
+                        <input type="text" class="form-control" value="" name="title" placeholder="请输入标题">
+                    </div>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label class=" col-form-label ">预览图</label>
+                    <input type="hidden" value="" name="thumb" >
+                    <div id="pic_div" class="dropzone up_pic_one">
+                    </div>
+                </div>
+
+
+                <div class="form-group mb-3">
+                    <label class=" col-form-label ">栏目</label>
+                    <div class="">
+                        <div class="form-group">
+                            <select class="form-control" name="categoryId">
+                                {{range $index, $item := .BuildIn.CategoryTree .ContentType}}
+                                <option value="{{$item.Id}}">{{$item.Name}}</option>
+                                {{end}}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label class=" col-form-label">内容</label>
+                    <div class="" id="editormd">
+                        <textarea name="content" style="display: none"></textarea>
+                        <div id="vditor"></div>
+                    </div>
+                </div>
+                <div class="form-group mb-3">
+                    <div class=" ">
+                        <button type="submit" class="btn btn-primary btn-block">发布</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+<script type="text/javascript">
+jQuery(function($) {
+    $("#user-blog").addClass("active")
+
+    var upfile = false;
+    var pic = $("#pic_div").dropzone({
+        url: "/file",
+        maxFiles: 1,
+        uploadMultiple: false,
+        thumbnailWidth:300,
+        thumbnailMethod:"crop",
+        addRemoveLinks:true,
+        acceptedFiles: ".jpg, .jpeg, .png", // 允许的文件类型
+        dictDefaultMessage: "点击或拖拽文件到此处上传", // 默认的提示信息
+        init: function() {
+
+            this.on("success", function(file, response) {
+                response = JSON.parse(response);
+                $('input[name=thumb]').val(response.url)
+            });
+
+            this.on("removedfile",function(file){
+                $('input[name=thumb]').val("")
+            })
+
+            this.on("thumbnail",function(file, dataUrl){
+              //  $("#pic_div").css("background-image","url("+dataUrl+")")
+            })
+
+            this.on("addedfile", function(file) {
+                if(upfile !== false){
+                    this.removeFile(upfile);
+                }
+                upfile = file
+            });
+        }
+    });
+
+    // 编辑器初始化
+    testEditor = editormd("editormd", {
+        width   : "100%",
+        height  : 640,
+        syncScrolling : "single",
+        imageUpload    : true,
+        imageFormats   : ["jpg", "jpeg", "gif", "png", "bmp", "webp"],
+        imageUploadURL : "/file",
+        path    : "/plugin/editormd/lib/"
+    });
+    // 表单校验
+    $('#contentForm').validate({
+        errorElement: 'div',
+        errorClass: 'validation-error-block',
+        focusInvalid: true,
+        rules: {
+            title: {
+                required: true
+            },
+            categoryId: {
+                required: true
+            }
+        },
+        messages: {
+            title: {
+                required: "请输入标题"
+            },
+            categoryId: {
+                required: "请选择栏目"
+            }
+        },
+        submitHandler: function(form) {
+            let submit = $('button[type=submit]')
+            if (submit.attr('disabled') == 'true') {
+                swal({
+                    text:   "请勿重复提交",
+                    icon:   "warning",
+                    button: "确定",
+                });
+                return
+            }
+
+
+            submit.attr('disabled', 'true');
+            $(form).ajaxSubmit({
+                dataType: 'json',
+                success:  function (r, textStatus) {
+                    if (r.code <= 0) {
+                        swal({
+                            title:   "发布成功",
+                            text:    "内容发布成功",
+                            icon:    "success",
+                            buttons: ["继续撰写", "返回列表"]
+                        }).then((value) => {
+                            if (value) {
+                                window.location.href = "/content"
+                            } else {
+                                window.location.reload()
+                            }
+                        });
+                    } else {
+                        swal({
+                            text:   r.message,
+                            icon:   "warning",
+                            button: "确定",
+                        });
+                    }
+                }
+            });
+            submit.removeAttr('disabled');
+        },
+        errorPlacement: function (error, element) {
+            element.addClass("is-invalid")
+            error.appendTo(element.parent());
+        }
+    });
+});
+</script>
+
+
+
+

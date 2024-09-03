@@ -1,0 +1,64 @@
+<div class="container">
+
+    <div class="d-flex justify-content-between mt-5 mb-5">
+        <div class="user_header">
+            <p class="h2">博客管里</p>
+            <span>管里/发布新的内容</span>
+        </div>
+
+        <div>
+            <a href="/content/create?type=blog" type="button" class="btn btn-primary">写博客</a>
+        </div>
+    </div>
+
+
+    <div class="bg-white rounded overflow-hidden mb-4 shadow-sm p-0">
+
+
+        <table class="table p-3 main_table">
+            <thead>
+            <tr class="bg-body-secondary">
+                <th scope="col"><span class="main_table_tr_firstth">ID</span></th>
+                <th scope="col">分类</th>
+                <th scope="col">名称</th>
+                <th scope="col">阅读/评论</th>
+                <th scope="col">发布时间</th>
+                <th scope="col">操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            {{if .Data.Content}}
+            {{range $index, $item := .Data.Content.List}}
+            <tr>
+                <td><span class="main_table_tr_firstth">{{$item.Content.Id}}</span></td>
+                <td>{{$item.Category.Name}}</td>
+                <td>{{$item.Content.Title}}</td>
+                <td>{{$item.Content.ViewCount}}｜{{$item.Content.ReplyCount}}</td>
+                <td>{{$item.Content.CreatedAt | $.BuildIn.FormatTime}}</td>
+                <td>
+                    <a href="/content/update/{{$item.Content.Id}}">编辑</a>
+                    <a href="javascript:void(0);"
+                       onclick="gf.content.delete({{$item.Content.Id}},'/content/delete','/content')">删除</a>
+                </td>
+            </tr>
+            {{end}}
+            {{else}}
+            <tr><td colspan="6">没有内容</td></tr>
+            {{end}}
+            </tbody>
+        </table>
+
+        {{if gt .Data.Content.Total .Data.Content.Size}}
+            <ul class="pagination">
+                {{.BuildIn.Page .Data.Content.Total .Data.Content.Size }}
+            </ul>
+        {{end}}
+
+    </div>
+</div>
+
+<script type="text/javascript">
+    jQuery(function($) {
+        $("#user-blog").addClass("active")
+    })
+</script>

@@ -1,0 +1,29 @@
+<!--- main --->
+<script src="/plugin/typed.umd.js"></script>
+<div class="container">
+    <div class="row py-lg-5">
+        <div class="col-lg-6 col-md-8 mx-auto">
+            <h1 class="fw-light fs-1">chin</h1>
+            <p class="lead text-body-secondary">
+                写点什么介绍呢？网名Chin,性别男,没啥特别爱好。<br>
+                目前待业在家,<span id="typed2">干点啥呢</span>。
+            </p>
+            <p>
+                <a href="#" class="btn btn-outline-dark my-2 btn-sm"><i class="bi bi-github"></i></a>
+                <a href="#" class="btn btn-outline-dark my-2 btn-sm"><i class="bi bi-sina-weibo"></i></a>
+                <a href="#" class="btn btn-outline-dark my-2 btn-sm"><i class="bi bi-envelope-at"></i></a>
+            </p>
+        </div>
+    </div>
+</div>
+<script>
+    var typed2 = new Typed('#typed2', {
+        strings: ['健健身', '玩玩游戏', '学golang','学flutter'],
+        typeSpeed: 100,
+        backSpeed: 100,
+        //fadeOut: true,
+        backDelay: 500,
+        startDelay: 1000,
+        loop: true
+    });
+</script>

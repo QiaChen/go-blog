@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    {{include "index/header.html" .}}
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/user.css?v={{.BuildIn.Version}}">
+</head>
+
+<body class="bg-light user_body" >
+        <div class="d-flex align-items-stretch user_main" >
+
+            <div class="bg-white border-right border user_main_left overflow-y-auto" >
+                <div class="mx-3 border-bottom text-center py-4">
+                    <a href="//{{$.BuildIn.GetDomain "main"}}/" class=" text-dark text-decoration-none">
+                    <span class="fs-4 lh-1">CQQ<span class="text-bg-dark text-light d-inline-block px-2 fs-5">.ME</span></span>
+                    </a>
+                </div>
+
+                <ul class="user_nav list-unstyled">
+                    <li><a class="user_nav_link" href="//{{$.BuildIn.GetDomain "i"}}" id="user-index"><i class="bi bi-speedometer2"></i> 首页</a></li>
+                    <li><a class="user_nav_link" href="#"><i class="bi bi-people"></i> 用户</a></li>
+                    <li><span class="user_nav_title" href="#">内容管理</span></li>
+                    <li><a class="user_nav_link" href='//{{$.BuildIn.GetDomain "i"}}/content' id="user-blog"><i class="bi bi-person"></i> 博客管理</a></li>
+                    <li><a class="user_nav_link" href='//{{$.BuildIn.GetDomain "i"}}/page' id="user-page"><i class="bi bi-file-earmark"></i> 页面管理</a></li>
+                    <li><span class="user_nav_title" href="#">个人资料</span></li>
+                    <li><a class="user_nav_link" href='//{{$.BuildIn.GetDomain "i"}}/profile' id="user-profile"><i class="bi bi-person"></i> 基本资料</a></li>
+                    <li><a class="user_nav_link" href='//{{$.BuildIn.GetDomain "i"}}/profile/avatar' id="user-avatar"><i class="bi bi-person-up"></i> 修改头像</a></li>
+                    <li><a class="user_nav_link" href='//{{$.BuildIn.GetDomain "i"}}/profile/password' id="user-passwd"><i class="bi bi-key"></i> 安全中心</a></li>
+                </ul>
+
+                <div class="user_nav_footer start-0 p-2 border-top bg-white">
+                    <a class="btn user_nav_footer_userinfo" href="//{{$.BuildIn.GetDomain "i"}}/i/logout">
+                        <i class="bi bi-power"></i>
+                        {{.Context.User.Nickname}}
+                    </a>
+                </div>
+            </div>
+            <div class="flex-grow-1 user_main_right overflow-y-auto h-100">
+                {{include "index/message.html" .}}
+                {{include .MainTpl .}}
+                <!--- footer --->
+                {{include "index/footer.html" .}}
+            </div>
+            <div class="user_nav_open"><i class="bi bi-grip-vertical"></i></div>
+        </div>
+<script>
+    jQuery(function ($) {
+        $(".user_nav_open").click(function (){
+            nav_w = $('.user_main_left').width();
+            if(nav_w == 0){
+                $('.user_main_left').css('width', '220px');
+                $('.user_main_left').css('min-width', '220px');
+                $('.user_nav_open').css("left","219px");
+            }else{
+                $('.user_main_left').css('width', '0px');
+                $('.user_main_left').css('min-width', '0px');
+                $('.user_nav_open').css("left","0px");
+            }
+        })
+    })
+</script>
+</body>
+
+</html>

@@ -1,0 +1,159 @@
+<style>
+    .form-signin {
+        max-width: 400px;
+        padding: 1rem;
+        margin-top: 15rem !important;
+    }
+
+    /* 小于 768px */
+    @media (max-width: 767px) {
+        .form-signin {
+            margin-top: 9rem !important;
+        }
+    }
+    .form-signin .form-floating:focus-within {
+        z-index: 2;
+    }
+
+    .form-signin input[name="passport"] {
+        margin-bottom: -1px;
+        border-bottom-right-radius: 0;
+        border-bottom-left-radius: 0;
+    }
+
+    .form-signin input[name="password"] ,.form-signin input[name="password2"] {
+        margin-bottom: -1px;
+        border-radius: 0;
+    }
+
+    .form-signin input[name="captcha"] {
+        margin-bottom: 10px;
+        border-top-left-radius: 0;
+        border-top-right-radius: 0;
+    }
+    .form-signin .input-group-text{
+        border-top-right-radius:0px;
+        padding: 0px !important;
+        height: calc(3.5rem + calc(var(--bs-border-width) * 2));
+    }
+    .form-signin .input-group-text img{
+        height: 56px;
+    }
+</style>
+<main class="form-signin w-100 m-auto">
+    <form id="registerForm" action="/register" method="post">
+        <a href="//{{$.BuildIn.GetDomain "main"}}/" class="d-flex align-items-center mb-3 text-dark text-decoration-none">
+        <span class="fs-1 lh-1">CQQ<span class="text-bg-dark text-light d-inline-block px-2 fs-3">.ME</span></span>
+        </a>
+
+        <div class="form-floating">
+            <input type="hidden" name="nickname">
+            <input type="text" class="form-control" name="passport" placeholder=""  minlength="4" maxlength="11" >
+            <label>用户名</label>
+        </div>
+        <div class="form-floating">
+            <input type="password" class="form-control" name="password" placeholder=""  minlength="6" maxlength="20" id="password">
+            <label>密码</label>
+        </div>
+
+        <div class="form-floating">
+            <input type="password" class="form-control" name="password2" placeholder="" minlength="6" maxlength="20"  id="password2">
+            <label>确认密码</label>
+        </div>
+
+        <div class="input-group mb-3 ">
+            <div class="form-floating">
+                <input type="text" class="form-control" name="captcha" placeholder="">
+                <label>验证码</label>
+            </div>
+            <span class="input-group-text"><img id="code-img" class="captcha" loading="lazy" onclick="gf.reloadCaptcha()"></span>
+        </div>
+
+        <button type="submit" class="btn btn-primary w-100 py-2 w-100 py-2">注册</button>
+        <p class="text-body-tertiary right mt-3 text-end">已有本站账号？<a href="/login">去登陆</a> </p>
+    </form>
+
+</main>
+
+<script type="text/javascript">
+jQuery(function($) {
+    gf.reloadCaptcha();
+    // footer悬浮
+    $("footer").addClass("fixed-bottom");
+
+    $('#registerForm').validate({
+        errorElement: 'div',
+        errorClass: 'validation-error-block',
+        focusInvalid: true,
+        rules: {
+            password2: {
+                equalTo: "#password"
+            },
+        },
+        messages: {
+            passport: {
+                required: "请输入账号"
+            },
+            password: {
+                required: "请输入密码"
+            },
+            password2: {
+                required: "请确认密码",
+                equalTo: "输入的新密码两次不同"
+            },
+            captcha: {
+                required: "请确认验证码"
+            }
+        },
+        submitHandler: function(form) {
+            $('button[type=submit]').attr('disabled', 'true');
+
+            $('[name="nickname"]').val($('[name="passport"]').val());
+            // 传输加密
+            let passport  = $('[name="passport"]').val();
+            let password  = $('[name="password"]').val();
+            let password2 = $('[name="password2"]').val();
+            $('[name="password"]').val(hex_md5(passport + password));
+            $('[name="password2"]').val(hex_md5(passport + password2));
+
+            jQuery(form).ajaxSubmit({
+                dataType: 'json',
+                success:  function (r, textStatus) {
+                    if (r.code <= 0) {
+                        swal({
+                            title:   "注册成功",
+                            text:    "页面将自动跳转到注册前页面",
+                            icon:    "success",
+                            timer:   2000,
+                            buttons: false
+                        }).then((value) => {
+                            if (r.redirect != "") {
+                                window.location.href = r.redirect;
+                            } else {
+                                window.location.href = "/";
+                            }
+                        });
+                    } else {
+                        if (r.message != "") {
+                            swal({
+                                text:   r.message,
+                                icon:   "warning",
+                                button: "确定"
+                            });
+                        }
+                        $('[name="captcha"]').val('');
+                        $('[name="password"]').val(password);
+                        $('[name="password2"]').val(password2);
+                        gf.reloadCaptcha()
+                    }
+                }
+            });
+            $('button[type=submit]').removeAttr('disabled');
+        },
+        errorPlacement: function (error, element) {
+            element.addClass("is-invalid")
+            error.appendTo(element.parent());
+        }
+    });
+});
+</script>

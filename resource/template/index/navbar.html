@@ -1,0 +1,64 @@
+
+<div class="container">
+
+    <header class="d-flex flex-wrap align-items-center  justify-content-md-between py-3 mb-4">
+        <div class="d-flex col-3 d-md-none d-flex ">
+            <a class="fs-3 text-dark fw-bold" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" > <i class="bi bi-list"></i></a>
+
+            <div class="offcanvas offcanvas-start bg-light" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel" style="backdrop-filter: blur(10px);">
+                <div class="offcanvas-header">
+                    <h5 class="offcanvas-title" id="offcanvasNavbarLabel">CQQ</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                </div>
+                <div class="offcanvas-body">
+                    <ul class="nav_sm_ul nav flex-column">
+
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <a href='//{{$.BuildIn.GetDomain "main"}}' class="d-flex col-6 col-md-3 mb-2 mb-md-0 text-dark text-decoration-none pt-2 pt-md-0 nav_logo">
+            <span class="fs-3 lh-1">CQQ<span class="text-bg-dark text-light d-inline-block px-1 fs-4">.ME</span></span>
+        </a>
+
+        <ul class="nav nav-pills col-auto  justify-content-center d-md-flex d-none nav_ul">
+            {{range $index, $item := .BuildIn.TopMenus}}
+            <li class="nav-item {{if $item.Items}}dropdown{{end}}">
+                {{if $item.Items}}
+                <a class="nav-link dropdown-toggle {{if $item.Active }}active {{else}}link-dark{{end}}" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{$item.Name}}</a>
+                <div class="dropdown-menu">
+                    {{range $index, $subItem := $item.Items}}
+                    <a class="dropdown-item" href="{{$subItem.Url}}" target="{{$subItem.Target}}">{{$subItem.Name}}</a>
+                    {{end}}
+                </div>
+                {{else}}
+                <a href="{{$item.Url}}" class="nav-link px-md-3 {{if $item.Active }}active {{else}}link-dark{{end}}">{{$item.Name}}</a>
+                {{end}}
+            </li>
+            {{end}}
+        </ul>
+
+        <div class="col-3 text-end ms-auto ms-md-0">
+            {{if .Context.User}}
+            <a class="btn btn-outline-primary dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <img width="20" height="20" class="nav-avatar d-none d-sm-inline-block" src="{{.Context.User.Avatar}}">
+                {{.Context.User.Nickname}}
+            </a>
+
+            <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                <a class="dropdown-item" href="//{{$.BuildIn.GetDomain "i"}}"> 个人中心</a>
+                <a class="dropdown-item" href="//{{$.BuildIn.GetDomain "i"}}/profile"> 编辑资料</a>
+                <li><hr class="dropdown-divider"></li>
+                <a class="dropdown-item" href="//{{$.BuildIn.GetDomain "i"}}/i/logout"> 退出</a>
+            </div>
+
+            {{else}}
+            <a href="//{{$.BuildIn.GetDomain "i"}}/login" class="btn btn-outline-primary me-2 ">Login</a>
+            <a href="//{{$.BuildIn.GetDomain "i"}}/register" class="btn btn-primary d-none d-md-inline-block">Sign-up</a>
+            {{end}}
+        </div>
+
+    </header>
+</div>
+
